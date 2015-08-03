@@ -1,4 +1,3 @@
-!
 function(e, t) {
     function n(e) {
         var t, n, r = O[e] = {};

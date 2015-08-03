@@ -8,9 +8,25 @@ import random
 from cookie import get_cookie
 from showapi import laifudao
 from selenium import webdriver
+from bs4 import BeautifulSoup
 
 phone = 13269682237
 
+def parse_params(s):   # parse string like this: uid=5353880302&fnick=御姐范凡白&sex=f
+    ret = dict()
+    s_l = s.split('&')
+    for x in s_l:
+        x_l = x.split('=')
+        if x[0]=='uid':
+            ret['uid'] = x[1]
+        if x[0]=='fnick':
+            ret['fnick'] = x[1]
+    return ret
+def follow_item_checker(o):
+    if o.has_key('class') and o['class']==['follow_item', 'S_line2']:
+        return True
+    else:
+        return False
 def checkuser(phonenumber):
     url = 'http://weibo.com/signup/v5/formcheck'
     headers = {
@@ -36,13 +52,26 @@ def checkuser(phonenumber):
     return res
 
 class weibo():
-    def __init__(self, username, passwd):
+    def __init__(self, username='cainiaocome@gmail.com', passwd='jialin0204'):
         self.firefox = webdriver.Firefox()
-        self.firefox.delete_all_cookies()
+        #self.firefox.delete_all_cookies()
         self.is_login = False
         self.username = username
         self.passwd = passwd
+    def search_link(self, keyword):
+        soup = BeautifulSoup(self.firefox.page_source)
+        alla = soup.find_all(name='a')
+        for a in alla:
+            try:
+                href = a['href']
+            except KeyError:
+                continue
+            if href.find(keyword) != -1:
+                print href
+                return href
     def login(self):
+        if self.is_login == True:
+            return
         login_url = 'http://weibo.com/login.php'
         self.firefox.get(login_url)
         time.sleep(3)
@@ -57,8 +86,8 @@ class weibo():
         time.sleep(6)
         self.is_login = True
     def post(self, data):
-        if not self.is_login:
-            self.login()
+        self.login()
+        time.sleep(6)
         front_page_button = self.firefox.find_element_by_css_selector('#pl_common_top > div > div > div.gn_position > div.gn_nav > ul > li:nth-child(1) > a')
         front_page_button.click()
         time.sleep(3)
@@ -66,18 +95,46 @@ class weibo():
         post_input.send_keys(data)
         post_button = self.firefox.find_element_by_css_selector('#v6_pl_content_publishertop > div > div.func_area.clearfix > div.func > a')
         post_button.click()
+    def fan(self, uid):
+        self.login()
+        fan_url = 'http://weibo.com/u/{}'.format(uid)
+        self.firefox.get(fan_url)
+        fan_button = self.firefox.find_element_by_css_selector('#Pl_Official_Headerv6__1 > div > div > div.shadow.S_shadow > div.pf_opt > div > div:nth-child(1) > a')
+        fan_button.click()
+    def get_fan_list(self, uid): # return fan list, [ {'uid':'000000', 'fnick':'god'} ]
+        ret = list()
+        self.login()
+        self.firefox.get('http://weibo.com/u/{}'.format(uid))
+        self.firefox.get(self.search_link('follow?relate=fans'))
+        time.sleep(6)
+        soup = BeautifulSoup(self.firefox.page_source)
+        print soup
+        for x in soup.find_all(follow_item_checker):
+            ret.append(x['action-data'])
+        return ret
     def quit(self):
         self.firefox.quit()
 
 def main():
-    l = laifudao()
-    for x in l:
-        print '-'*86
-        print x['content']
-    weibo_tmp = weibo('cainiaocome@gmail.com', 'jialin0204')
-    weibo_tmp.post(random.choice(l)['content'])
-    time.sleep(30)
-    weibo_tmp.quit()
+    try:
+        l = laifudao()
+        for x in l:
+            print '-'*86
+            print x['content']
+        weibo_tmp = weibo('cainiaocome@gmail.com', 'jialin0204')
+        weibo_tmp.post(random.choice(l)['content'])
+        time.sleep(3)
+        fan_list = weibo_tmp.get_fan_list('2996418805')
+        for fan in fan_list:
+            print fan
+        time.sleep(30)
+    except:
+        weibo_tmp.quit()
+    else:
+        weibo_tmp.quit()
+
+def test():
+    parse_params('uid=5353880302&fnick=御姐范凡白&sex=f')
 
 if __name__=='__main__':
     main()
