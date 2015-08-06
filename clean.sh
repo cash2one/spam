@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-rm *.pyc
+rm -rf *.pyc *.cookie

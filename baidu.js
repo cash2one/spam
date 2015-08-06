@@ -1,7 +1,7 @@
 function(e, t) {
     function n(e) {
         var t, n, r = O[e] = {};
-        for (e = e.split(/\s+/), t = 0, n = e.length; n > t; t++) r[e[t]] = !0;
+   for (e = e.split(/\s+/), t = 0, n = e.length; n > t; t++) r[e[t]] = !0;
         return r
     }
     function r(e, n, r) {
