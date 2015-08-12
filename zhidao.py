@@ -11,13 +11,8 @@ import os
 import json
 import pickle
 from selenium import webdriver
+from util import headers
 
-headers = {'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Encoding':'gzip, deflate, utf-8',
-            'Accept-Language':'en-US,en;q=0.5',
-            'Connection':'keep-alive',
-            'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:24.0) Gecko/20140924 Firefox/24.0 Iceweasel/24.8.1'
-          }
 def downloadImageFile(imgUrl, cookies, headers=headers, filename='b.jpg'):
     r = requests.get(url=imgUrl) # here we need to set stream = True parameter
     with open(filename, 'wb') as f:
@@ -27,7 +22,7 @@ def downloadImageFile(imgUrl, cookies, headers=headers, filename='b.jpg'):
                 f.flush()
         f.close()
 
-class tieba():
+class zhidao():
     def __init__(self, username='cainiaocome@163.com', passwd='jialinjialin'):
         self.username = username
         self.passwd = passwd
@@ -35,10 +30,6 @@ class tieba():
         self.cookies = dict()
         if os.path.exists(self.baidu_cookie_path):
             self.cookies = pickle.load(open(self.baidu_cookie_path, 'rb'))
-    def get_t(self):  # fucking crazy param
-        t = time.time()
-        t = int(t*1000)
-        return t
     def update_cookies(self):
         if os.path.exists(self.baidu_cookie_path):
             self.cookies = pickle.load(open(self.baidu_cookie_path, 'rb'))
@@ -63,8 +54,23 @@ class tieba():
         recommend_url = 'http://zhidao.baidu.com/question/api/recommend?rn={}&t={}'.format(10, self.get_t())
         res = requests.get(url=recommend_url, headers=headers, cookies=self.cookies)
         return res.text
-    def run(self):
-        self.firefox.get('http://tieba.baidu.com/p/{}'.format(random.randint(1,10000000000)))
+    def ajax(self, filepath):
+        headers.update({
+            'Host':'zhidao.baidu.com',
+            'Origin':'http://zhidao.baidu.com',
+            'Pragma':'no-cache',
+            'Referer':'http://zhidao.baidu.com/question/1734099915854102907.html?entry=qb_ihome_tag_%E7%99%8C%E7%97%87_0_%E7%99%8C%E7%97%87',
+            'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36',
+            'X-Requested-With':'ShockwaveFlash/18.0.0.160',
+            })
+        ajax_url = 'http://zhidao.baidu.com/submit/ajax/'
+        files = {'file': open(filepath, 'rb')}
+        s = requests.Session()
+        res = s.post(url=ajax_url, headers=headers, cookies=self.cookies, files=files) 
+        print res.text
+        print res.request.headers
+    def run(self):  # dont use this
+        self.firefox.get('http://zhidao.baidu.com/p/{}'.format(random.randint(1,10000000000)))
         time.sleep(3)
         js = 'var q=document.documentElement.scrollTop=10000000'
         self.firefox.execute_script(js) # scroll to bottom
@@ -77,24 +83,27 @@ class tieba():
 
 def main():
     try:
-        tieba_tmp = tieba()
-        tieba_tmp.update_cookies()
-        while True:
-            try:
-                r = json.loads(tieba_tmp.get_recommend(), encoding='utf-8')['list']
-            except TypeError:
-                continue
-            else:
-                break
-        for x in r:
-            print x['qid'], x['title']
-        if hasattr(tieba_tmp, 'firefox'):
-            tieba_tmp.quit()
+        #zhidao_tmp = zhidao()
+        #zhidao_tmp.update_cookies()
+        #while True:
+        #    try:
+        #        r = json.loads(zhidao_tmp.get_recommend(), encoding='utf-8')['list']
+        #    except TypeError:
+        #        continue
+        #    else:
+        #        break
+        #for x in r:
+        #    print x['qid'], x['title']
+        #if hasattr(zhidao_tmp, 'firefox'):
+        #    zhidao_tmp.quit()
+        zhidao_tmp = zhidao()
+        zhidao_tmp.update_cookies()
+        zhidao_tmp.ajax('ss.png')
     except:
         t,v,_ = sys.exc_info()
         print t,v
-        if hasattr(tieba_tmp, 'firefox'):
-            tieba_tmp.quit()
+        if hasattr(zhidao_tmp, 'firefox'):
+            zhidao_tmp.quit()
 
 if __name__=='__main__':
     main()
