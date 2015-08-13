@@ -11,7 +11,7 @@ from showapi import laifudao
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
-from util import get_t, headers, what_to_say, parse_ups, mongjiala
+from util import get_t, headers, what_to_say, parse_ups, mongjiala, extract_cookies
 
 phone = 13269682237
 
@@ -61,12 +61,9 @@ class weibo():
         self.is_login = False
         self.username = username
         self.password = password
-    def extract_cookies(self):
-        cookies = dict()
-        self.firefox_cookies = self.firefox.get_cookies()
-        for firefox_cookie in self.firefox_cookies:
-            cookies[firefox_cookie['name']] = firefox_cookie['value']
-        return cookies
+    def check_login_status(self):
+        self.cookies = extract_cookies(self.firefox)
+        return 'login_sid_t' in self.cookies.keys()  # if we have logged in, this cookie will be set
     def search_link(self, keyword):
         soup = BeautifulSoup(self.firefox.page_source)
         alla = soup.find_all(name='a')
@@ -98,8 +95,6 @@ class weibo():
         time.sleep(6)
         self.is_login = True
     def post(self, data=''):
-        self.login()
-        time.sleep(6)
         self.firefox.get('http://weibo.com/home')
         post_input = self.firefox.find_element_by_css_selector('#v6_pl_content_publishertop > div > div.input > textarea')
         post_input.clear()
@@ -167,18 +162,19 @@ def main():
     weibo_tmp = weibo()
     while True:
         try:
-            l = laifudao()
-            for x in l:
-                if len(x['content'])<140:
-                    break
+            #l = laifudao()
+            #for x in l:
+            #    if len(x['content'])<140:
+            #        break
             for up in parse_ups():
                 print up
-                weibo_tmp.login(up['username'], up['password'])
-                #weibo_tmp.post(mongjiala)
+                time.sleep(30)
+                #weibo_tmp.login(up['username'], up['password'])
+                weibo_tmp.post(mongjiala)
         except:
             t,v,_ = sys.exc_info()
             print t,v
-        this_time_sleep = random.randint(1200,1800)
+        this_time_sleep = random.randint(1800,3600)
         print 'this_time_sleep:', this_time_sleep
         time.sleep(this_time_sleep)
 

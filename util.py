@@ -24,6 +24,13 @@ def get_t():  # fucking crazy param
     t = int(t*1000)
     return t
 
+def extract_cookies(firefox):
+    cookies = dict()
+    firefox_cookies = firefox.get_cookies()
+    for firefox_cookie in firefox_cookies:
+        cookies[firefox_cookie['name']] = firefox_cookie['value']
+    return cookies
+
 def parse_ups():
     file_name = 'ups'
     ret = list()
