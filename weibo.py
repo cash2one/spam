@@ -95,6 +95,9 @@ class weibo():
         time.sleep(6)
         self.is_login = True
     def post(self, data=''):
+        while not self.check_login_status():
+            print 'firefox not logged in'
+            time.sleep(1)
         self.firefox.get('http://weibo.com/home')
         post_input = self.firefox.find_element_by_css_selector('#v6_pl_content_publishertop > div > div.input > textarea')
         post_input.clear()
@@ -168,7 +171,7 @@ def main():
             #        break
             for up in parse_ups():
                 print up
-                time.sleep(30)
+                time.sleep(60)
                 #weibo_tmp.login(up['username'], up['password'])
                 weibo_tmp.post(mongjiala)
         except:
