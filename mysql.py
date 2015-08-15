@@ -4,11 +4,11 @@
 import time
 import random
 import string
-import MySQLdb
+import pymysql
 
 def sql_user_weibo_content(username):
-    conn=MySQLdb.connect(host='localhost',user='root',passwd='jialin,0204',db='weibo', charset='utf8')
-    cur=conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+    conn=pymysql.connect(host='localhost',user='root',passwd='jialin,0204',db='weibo', charset='utf8', cursorclass=pymysql.cursors.DictCursor)
+    cur=conn.cursor()
     cur.execute('select * from content where username="{}"'.format(username))
     ret = cur.fetchall()  # list of dict
     cur.close()

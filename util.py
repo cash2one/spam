@@ -50,7 +50,7 @@ def parse_ups():
     return ret
 
 def main():
-    print 'ok'
+    print mongjiala
 
 if __name__=='__main__':
     main()
