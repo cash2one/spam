@@ -12,8 +12,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 from util import get_t, headers, what_to_say, parse_ups, mongjiala, extract_cookies
-
-phone = 13269682237
+from mysql import sql_user_weibo_content
 
 def parse_params(s):   # parse string like this: uid=5353880302&fnick=御姐范凡白&sex=f
     ret = dict()
@@ -173,7 +172,7 @@ def main():
                 print up
                 time.sleep(60)
                 #weibo_tmp.login(up['username'], up['password'])
-                weibo_tmp.post(mongjiala)
+                weibo_tmp.post(sql_user_weibo_content('Subham@sina.com'))
         except:
             t,v,_ = sys.exc_info()
             print t,v

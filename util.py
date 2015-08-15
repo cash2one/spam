@@ -2,6 +2,8 @@
 #coding=utf-8
 
 import time
+import random
+import string
 
 docx_url = 'http://pan.baidu.com/s/1i3EPV73'
 
@@ -48,7 +50,7 @@ def parse_ups():
     return ret
 
 def main():
-    print mongjiala
+    print 'ok'
 
 if __name__=='__main__':
     main()
