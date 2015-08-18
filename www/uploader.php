@@ -1,5 +1,6 @@
 <?php
 
+require('validate.php');
 function main()
 {
     header("Content-Type: text/html; charset=utf-8");
@@ -32,11 +33,14 @@ function main()
         <body>
             <ul class="banner">
                 <li><a href="uploader.php?username=Subham@sina.com">subham</a></li>
-                <li><a href="uploader.php?username=Subham@sina.com">subham2</a></li>
             </ul>
             <br />
     ';
 
+    if ( !isset($_COOKIE['username']) or !isset($_COOKIE['password']) or !validate($_COOKIE['username'], $_COOKIE['password']) )
+    {
+        header('Location:login.php');
+    }
     if(empty($_GET['username']))
     {
         // nothing
