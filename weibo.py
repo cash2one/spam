@@ -172,7 +172,8 @@ def main():
                 print up
                 time.sleep(60)
                 #weibo_tmp.login(up['username'], up['password'])
-                weibo_tmp.post(sql_user_weibo_content('Subham@sina.com'))
+                weibo_content = json.loads(sql_user_weibo_content('Subham@sina.com')['weibo_content'])
+                weibo_tmp.post(random.choice(weibo_content))
         except:
             t,v,_ = sys.exc_info()
             print t,v
