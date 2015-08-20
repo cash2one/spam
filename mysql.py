@@ -5,6 +5,7 @@ import time
 import random
 import string
 import pymysql
+import chardet
 
 def sql_user_weibo_content(username):
     conn=pymysql.connect(host='localhost',user='root',passwd='jialin,0204',db='weibo', charset='utf8', cursorclass=pymysql.cursors.DictCursor)
@@ -14,11 +15,13 @@ def sql_user_weibo_content(username):
     cur.close()
     conn.close()
 
-    return ret[0]['weibo_content']
+    return ret
 
 def main():
     ret = sql_user_weibo_content('Subham@sina.com')
-    print ret
+    data = ret[0]['weibo_content'].encode('utf-8')
+    print data
+    print chardet.detect(data)
 
 if __name__=='__main__':
     main()
