@@ -27,13 +27,6 @@
         </style>
     </head>
     <body>
-        <p>
-            usage: single weibo user, multiple weibo content supported.
-            there are two buttons down there.
-            press "add more weibo" to add a new weibo content.
-            press "submit" to submit to server.
-            also, you can click "del" next to the text area to delete the correspoding weibo.
-        </p>
         <ul class="banner">
             <li><a href="uploader.php?username=Subham@sina.com">subham</a></li>
         </ul>

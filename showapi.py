@@ -27,7 +27,9 @@ def laifudao():
 
 
 def main():
-    print 'fuck off'
+    l = laifudao()
+    for x in l:
+        print x['content']
 
 if __name__=='__main__':
     main()

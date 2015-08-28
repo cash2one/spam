@@ -14,7 +14,8 @@ function main()
     $json = file_get_contents("php://input");
     $data = json_decode($json, true); # $data is a php object
     $username = $data['username'];
-    $newcontent = json_encode($data['newcontent'], JSON_UNESCAPED_UNICODE);
+    #$newcontent = json_encode($data['newcontent'], JSON_UNESCAPED_UNICODE);
+    $newcontent = json_encode($data['newcontent']);
     ##debug 
     #    $fp = @fopen("/tmp/weibo", "w+");
     #    $result = @fwrite($fp, $newcontent);
